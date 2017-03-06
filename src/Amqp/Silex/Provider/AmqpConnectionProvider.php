@@ -3,19 +3,22 @@
 namespace Amqp\Silex\Provider;
 
 use PhpAmqpLib\Connection\AMQPConnection;
+use Pimple\Container;
 
-class AmqpConnectionProvider extends \Pimple
+class AmqpConnectionProvider extends Container
 {
     /**
      * @param array $options
      */
     public function __construct(array $options)
     {
+        parent::__construct($options);
+
         $provider = $this;
         foreach ($options as $key => $connection) {
-            $this['default'] = $this->share(function () use ($connection, $provider) {
+            $this['default'] = function () use ($connection, $provider) {
                 return $provider->createConnection($connection['host'], $connection['port'], $connection['username'], $connection['password'], $connection['vhost']);
-            });
+            };
         }
     }
 

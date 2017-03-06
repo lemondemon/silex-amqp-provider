@@ -2,8 +2,9 @@
 
 namespace Amqp\Silex\Provider;
 
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 
 class AmqpServiceProvider implements ServiceProviderInterface
 {
@@ -19,7 +20,7 @@ class AmqpServiceProvider implements ServiceProviderInterface
      *
      * @param Application $app An Application instance
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app[self::AMQP_CONNECTIONS] = array(
             'default' => array(
@@ -35,18 +36,8 @@ class AmqpServiceProvider implements ServiceProviderInterface
             return $app[self::AMQP]->createConnection($host, $port, $username, $password, $vhost);
         });
 
-        $app[self::AMQP] = $app->share(function () use ($app) {
+        $app[self::AMQP] = function () use ($app) {
             return new AmqpConnectionProvider($app[self::AMQP_CONNECTIONS]);
-        });
+        };
     }
-
-    /**
-     * Bootstraps the application.
-     *
-     * This method is called after all services are registers
-     * and should be used for "dynamic" configuration (whenever
-     * a service must be requested).
-     */
-    public function boot(Application $app)
-    {}
 }
