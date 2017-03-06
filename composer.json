@@ -13,7 +13,7 @@
     ],
     "require": {
         "pimple/pimple": "*",
-        "silex/silex": "1.*",
+        "silex/silex": "^2.0",
         "php-amqplib/php-amqplib": "2.6.*"
     },
     "autoload": {
